@@ -138,17 +138,20 @@ ContentPage {
                             RowLayout {
                                 spacing: 3
                                 KeyboardKey {
-                                    key: "Ctrl"
+                                    key: (Config.options.cheatsheet.splitButtons ? (Config.options.cheatsheet.useMacSymbol ? '󰘴' : 'Ctrl') : (Config.options.cheatsheet.useMacSymbol ? '󰘴' : 'Ctrl') + ' ' + Config.options.cheatsheet.superKey + ' T')
                                 }
                                 KeyboardKey {
-                                    key: "󰖳"
+                                    key: Config.options.cheatsheet.superKey
+                                    visible: Config.options.cheatsheet.splitButtons
                                 }
                                 StyledText {
                                     Layout.alignment: Qt.AlignVCenter
                                     text: "+"
+                                    visible: Config.options.cheatsheet.splitButtons
                                 }
                                 KeyboardKey {
                                     key: "T"
+                                    visible: Config.options.cheatsheet.splitButtons
                                 }
                             }
                         }
@@ -214,8 +217,55 @@ ContentPage {
                 {
                     "value": "scheme-tonal-spot",
                     "displayName": Translation.tr("Tonal Spot")
+                },
+                {
+                    "value": "scheme-custom",
+                    "displayName": Translation.tr("Custom color")
                 }
             ]
+        }
+
+        ContentSubsection {
+            title: Translation.tr("Custom Color")
+            visible: Config.options.appearance.palette.type == "scheme-custom"
+
+            ConfigRow {
+
+                MaterialTextField {
+                    id: customSchemePrimaryColor
+                    Layout.fillWidth: true
+                    text: Config.options.appearance.palette.color
+                    placeholderText: Translation.tr("Custom Primary Color")
+
+                    onAccepted: {
+                        Config.options.appearance.palette.color = customSchemePrimaryColor.text.trim();
+                    }
+                }
+
+                MaterialTextField {
+                    id: customSchemeSecondaryColor
+                    Layout.fillWidth: true
+                    text: Config.options.appearance.palette.secondaryColor
+                    placeholderText: Translation.tr("Custom Secondary Color")
+
+                    onAccepted: {
+                        Config.options.appearance.palette.secondaryColor = customSchemeSecondaryColor.text.trim();
+                    }
+                }
+                
+                RippleButtonWithIcon {
+                    enabled: customSchemePrimaryColor.text
+                    buttonRadius: Appearance.rounding.small
+                    materialIcon: "format_paint"
+                    mainText: Translation.tr("Apply")
+                    onClicked: {
+                        Config.options.appearance.palette.color = customSchemePrimaryColor.text.trim();
+                        Config.options.appearance.palette.secondaryColor = customSchemeSecondaryColor.text.trim();
+                        Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --custom`]);
+                    }
+                }
+            }
+
         }
 
         ConfigSwitch {

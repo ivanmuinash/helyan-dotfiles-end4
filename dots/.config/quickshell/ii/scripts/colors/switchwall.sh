@@ -24,7 +24,7 @@ handle_kde_material_you_colors() {
     # Map $type_flag to allowed scheme variants for kde-material-you-colors-wrapper.sh
     local kde_scheme_variant=""
     case "$type_flag" in
-        scheme-content|scheme-expressive|scheme-fidelity|scheme-fruit-salad|scheme-monochrome|scheme-neutral|scheme-rainbow|scheme-tonal-spot)
+        scheme-content|scheme-expressive|scheme-fidelity|scheme-fruit-salad|scheme-monochrome|scheme-neutral|scheme-rainbow|scheme-tonal-spot|scheme-custom)
             kde_scheme_variant="$type_flag"
             ;;
         *)
@@ -162,6 +162,9 @@ switch() {
     color_flag="$4"
     color="$5"
 
+    echo "Switching wallpaper..."
+    echo "Args: imgpath='$imgpath', mode_flag='$mode_flag', type_flag='$type_flag', color_flag='$color_flag', color='$color'"
+
     # Start Gemini auto-categorization if enabled
     aiStylingEnabled=$(jq -r '.background.clock.cookie.aiStyling' "$SHELL_CONFIG_FILE")
     if [[ "$aiStylingEnabled" == "true" ]]; then
@@ -176,8 +179,19 @@ switch() {
     cursorposy_inverted=$((screensizey - cursorposy))
 
     if [[ "$color_flag" == "1" ]]; then
-        matugen_args=(color hex "$color")
-        generate_colors_material_args=(--color "$color")
+        IFS=',' read -ra colors <<< "$color"
+        
+        if [[ ${#colors[@]} -gt 1 ]]; then
+            # Create a temporary gradient image from colors
+            temp_img="$CACHE_DIR/user/generated/color_blend.png"
+            # Use ImageMagick to create a blended image
+            magick -size 1920x1080 gradient:"#${colors[0]}-#${colors[1]}" "$temp_img"
+            matugen_args=(image "$temp_img")
+            generate_colors_material_args=(--path "$temp_img")
+        else
+            matugen_args=(color hex "$color")
+            generate_colors_material_args=(--color "$color")
+        fi
     else
         if [[ -z "$imgpath" ]]; then
             echo 'Aborted'
@@ -270,7 +284,12 @@ switch() {
             generate_colors_material_args+=(--mode "$mode_flag")
         fi
     fi
-    [[ -n "$type_flag" ]] && matugen_args+=(--type "$type_flag") && generate_colors_material_args+=(--scheme "$type_flag")
+    if [[ -n "$type_flag" ]]; then
+        if [[ "$type_flag" == "scheme-custom" ]]; then
+            matugen_args+=(--type "scheme-content")
+        fi
+        generate_colors_material_args+=(--scheme "$type_flag")
+    fi
     generate_colors_material_args+=(--termscheme "$terminalscheme" --blend_bg_fg)
     generate_colors_material_args+=(--cache "$STATE_DIR/user/generated/color.txt")
 
@@ -295,8 +314,10 @@ switch() {
         [[ "$term_fg_boost" != "null" && -n "$term_fg_boost" ]] && generate_colors_material_args+=(--term_fg_boost "$term_fg_boost")
     fi
 
+    echo "Running: matugen ${matugen_args[*]}"
     matugen "${matugen_args[@]}"
     source "$(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate"
+    echo "Running: python3 $SCRIPT_DIR/generate_colors_material.py ${generate_colors_material_args[*]}"
     python3 "$SCRIPT_DIR/generate_colors_material.py" "${generate_colors_material_args[@]}" \
         > "$STATE_DIR"/user/generated/material_colors.scss
     "$SCRIPT_DIR"/applycolor.sh
@@ -318,6 +339,14 @@ main() {
 
     get_type_from_config() {
         jq -r '.appearance.palette.type' "$SHELL_CONFIG_FILE" 2>/dev/null || echo "auto"
+    }
+
+    get_color_from_config() {
+        jq -r '.appearance.palette.color' "$SHELL_CONFIG_FILE" 2>/dev/null || echo "#C5B9F9"
+    }
+
+    get_secondary_color_from_config() {
+        jq -r '.appearance.palette.secondaryColor' "$SHELL_CONFIG_FILE" 2>/dev/null || echo "#FFFFFF"
     }
 
     detect_scheme_type_from_image() {
@@ -342,6 +371,11 @@ main() {
                 if [[ "$2" =~ ^#?[A-Fa-f0-9]{6}$ ]]; then
                     color="$2"
                     shift 2
+                    # Check if next argument is also a color (for blending)
+                    while [[ "$1" =~ ^#?[A-Fa-f0-9]{6}$ ]]; do
+                        color="$color,$1"
+                        shift
+                    done
                 else
                     color=$(hyprpicker --no-fancy)
                     shift
@@ -350,6 +384,12 @@ main() {
             --image)
                 imgpath="$2"
                 shift 2
+                ;;
+            --custom)
+                type_flag="scheme-custom"
+                color_flag="1"
+                color="$(get_color_from_config),$(get_secondary_color_from_config)"
+                shift
                 ;;
             --noswitch)
                 noswitch_flag="1"
@@ -365,13 +405,13 @@ main() {
         esac
     done
 
-    # If type_flag is not set, get it from config
-    if [[ -z "$type_flag" ]]; then
-        type_flag="$(get_type_from_config)"
+    if [[ "$type_flag" == "scheme-custom" ]]; then
+        color="$(get_color_from_config),$(get_secondary_color_from_config)"
+        color_flag="1"
     fi
 
     # Validate type_flag (allow 'auto' as well)
-    allowed_types=(scheme-content scheme-expressive scheme-fidelity scheme-fruit-salad scheme-monochrome scheme-neutral scheme-rainbow scheme-tonal-spot auto)
+    allowed_types=(scheme-content scheme-expressive scheme-fidelity scheme-fruit-salad scheme-monochrome scheme-neutral scheme-rainbow scheme-tonal-spot scheme-custom auto)
     valid_type=0
     for t in "${allowed_types[@]}"; do
         if [[ "$type_flag" == "$t" ]]; then
@@ -411,6 +451,17 @@ main() {
         else
             echo "[switchwall] Warning: No image to auto-detect scheme from, defaulting to 'scheme-tonal-spot'" >&2
             type_flag="scheme-tonal-spot"
+        fi
+    fi
+
+    # If type_flag is not set, get it from config
+    configured_type="$(get_type_from_config)"
+    if [[ "$configured_type" == "scheme-custom" ]]; then
+        echo "Configured type: $configured_type"
+        type_flag="scheme-custom"
+        color_flag="1"
+        if [[ -z "$color" ]]; then
+            color="$(get_color_from_config),$(get_secondary_color_from_config)"
         fi
     fi
 

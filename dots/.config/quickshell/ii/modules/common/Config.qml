@@ -137,7 +137,9 @@ Singleton {
                     }
                 }
                 property JsonObject palette: JsonObject {
-                    property string type: "auto" // Allowed: auto, scheme-content, scheme-expressive, scheme-fidelity, scheme-fruit-salad, scheme-monochrome, scheme-neutral, scheme-rainbow, scheme-tonal-spot
+                    property string type: "auto" // Allowed: auto, scheme-content, scheme-expressive, scheme-fidelity, scheme-fruit-salad, scheme-monochrome, scheme-neutral, scheme-rainbow, scheme-tonal-spot, scheme-custom
+                    property string color: "#b27aff"
+                    property string secondaryColor: "#FFFFFF"
                 }
             }
 
@@ -297,6 +299,7 @@ Singleton {
                 property bool splitButtons: false
                 property bool useMouseSymbol: false
                 property bool useFnSymbol: false
+                property bool filterUnbinds: false
                 property JsonObject fontSize: JsonObject {
                     property int key: Appearance.font.pixelSize.smaller
                     property int comment: Appearance.font.pixelSize.smaller
