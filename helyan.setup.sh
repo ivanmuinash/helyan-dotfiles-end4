@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-# btop
-rm -rf ~/.config/btop
-ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/btop ~/.config/btop
+# # btop
+# rm -rf ~/.config/btop
+# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/btop ~/.config/btop
 
 # # fastfetch
 # rm -rf ~/.config/fastfetch
 # ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/fastfetch ~/.config/fastfetch
 
-# # fish
-# rm -rf ~/.config/fish
-# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/fish ~/.config/fish
+# fish
+rm -rf ~/.config/fish
+ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/fish ~/.config/fish
 
 # # fontconfig
 # rm -rf ~/.config/fontconfig
@@ -24,21 +24,21 @@ ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/btop ~/.config/btop
 # rm -rf ~/.config/fuzzel
 # ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/fuzzel ~/.config/fuzzel
 
-# # hypr
-# rm -rf ~/.config/hypr
-# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/hypr ~/.config/hypr
+# hypr
+rm -rf ~/.config/hypr
+ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/hypr ~/.config/hypr
 
-# # illogical-impulse
-# rm -rf ~/.config/illogical-impulse
-# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/illogical-impulse ~/.config/illogical-impulse
+# illogical-impulse
+rm -rf ~/.config/illogical-impulse
+ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/illogical-impulse ~/.config/illogical-impulse
 
 # # kde-material-you-colors
 # rm -rf ~/.config/kde-material-you-colors
 # ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/kde-material-you-colors ~/.config/kde-material-you-colors
 
-# # kitty
-# rm -rf ~/.config/kitty
-# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/kitty ~/.config/kitty
+# kitty
+rm -rf ~/.config/kitty
+ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/kitty ~/.config/kitty
 
 # # Kvantum
 # rm -rf ~/.config/Kvantum
@@ -52,9 +52,9 @@ ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/btop ~/.config/btop
 # rm -rf ~/.config/mpv
 # ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/mpv ~/.config/mpv
 
-# # quickshell
-# rm -rf ~/.config/quickshell
-# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/quickshell ~/.config/quickshell
+# quickshell
+rm -rf ~/.config/quickshell
+ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/quickshell ~/.config/quickshell
 
 # # wlogout
 # rm -rf ~/.config/wlogout
@@ -68,9 +68,9 @@ ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/btop ~/.config/btop
 # rm -rf ~/.config/zshrc.d
 # ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/zshrc.d ~/.config/zshrc.d
 
-# # file starship.toml
-# rm -f ~/.config/starship.toml
-# ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/starship.toml ~/.config/starship.toml
+# file starship.toml
+rm -f ~/.config/starship.toml
+ln -s ~/Documents/helyan-dotfiles-end4/dots/.config/starship.toml ~/.config/starship.toml
 
 # # file chrome-flags.conf
 # rm -f ~/.config/chrome-flags.conf
