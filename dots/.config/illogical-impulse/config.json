@@ -54,6 +54,7 @@
     },
     "apps": {
         "bluetooth": "kcmshell6 kcm_bluetooth",
+        "manageUser": "kcmshell6 kcm_users",
         "network": "kitty -1 fish -c nmtui",
         "networkEthernet": "kcmshell6 kcm_networkmanagement",
         "taskManager": "plasma-systemmonitor --page-name Processes",
@@ -188,6 +189,9 @@
         "low": 20,
         "suspend": 40
     },
+    "calendar": {
+        "locale": "en-GB"
+    },
     "cheatsheet": {
         "filterUnbinds": false,
         "fontSize": {
@@ -202,7 +206,7 @@
     },
     "conflictKiller": {
         "autoKillNotificationDaemons": false,
-        "autoKillTrays": false
+        "autoKillTrays": true
     },
     "crosshair": {
         "code": "0;P;d;1;0l;10;0o;2;1b;0"
@@ -507,6 +511,9 @@
         "bar": {
             "bottom": true,
             "leftAlignApps": false
+        },
+        "calendar": {
+            "force2CharDayOfWeek": true
         },
         "tweaks": {
             "smootherMenuAnimations": true,

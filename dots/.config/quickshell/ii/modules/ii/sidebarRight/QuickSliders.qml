@@ -38,12 +38,12 @@ Rectangle {
                 right: parent.right
             }
             visible: active
-            active: Config.options.sidebar.quickSliders.showBrightness
+            active: Config.options.sidebar.quickSliders.showBrightness && root.brightnessMonitor
             sourceComponent: QuickSlider {
                 materialSymbol: "brightness_6"
-                value: root.brightnessMonitor.brightness
+                value: root.brightnessMonitor?.brightness ?? 0
                 onMoved: {
-                    root.brightnessMonitor.setBrightness(value)
+                    if (root.brightnessMonitor) root.brightnessMonitor.setBrightness(value)
                 }
             }
         }
@@ -54,12 +54,12 @@ Rectangle {
                 right: parent.right
             }
             visible: active
-            active: Config.options.sidebar.quickSliders.showVolume
+            active: Config.options.sidebar.quickSliders.showVolume && Audio.sink?.audio
             sourceComponent: QuickSlider {
                 materialSymbol: "volume_up"
-                value: Audio.sink.audio.volume
+                value: Audio.sink?.audio?.volume ?? 0
                 onMoved: {
-                    Audio.sink.audio.volume = value
+                    if (Audio.sink?.audio) Audio.sink.audio.volume = value
                 }
             }
         }
@@ -70,12 +70,12 @@ Rectangle {
                 right: parent.right
             }
             visible: active
-            active: Config.options.sidebar.quickSliders.showMic
+            active: Config.options.sidebar.quickSliders.showMic && Audio.source?.audio
             sourceComponent: QuickSlider {
                 materialSymbol: "mic"
-                value: Audio.source.audio.volume
+                value: Audio.source?.audio?.volume ?? 0
                 onMoved: {
-                    Audio.source.audio.volume = value
+                    if (Audio.source?.audio) Audio.source.audio.volume = value
                 }
             }
         }

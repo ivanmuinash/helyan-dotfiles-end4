@@ -166,12 +166,6 @@ Item { // Bar content region
                 id: rightCenterGroupContent
                 anchors.fill: parent
 
-                ClockWidget {
-                    showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.fillWidth: true
-                }
-
                 UtilButtons {
                     visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
                     Layout.alignment: Qt.AlignVCenter
@@ -311,6 +305,14 @@ Item { // Bar content region
                         text: BluetoothStatus.connected ? "bluetooth_connected" : BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled"
                         iconSize: Appearance.font.pixelSize.larger
                         color: rightSidebarButton.colText
+                    }
+
+                    ClockWidget {
+                        showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.fillWidth: true
+                        Layout.leftMargin: indicatorsRowLayout.realSpacing
+                        implicitHeight: reveal ? notificationUnreadCount.implicitHeight : 0
                     }
                 }
             }
